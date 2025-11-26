@@ -1,9 +1,18 @@
 import { Router } from 'express'
 import subjectController from '~/controllers/subject.controller'
-const router = Router()
+import fileController from '~/controllers/file.controller'
+import authenticate from '~/middleware/authen.middleware'
 
-/**
- * GET /debug/users → xem danh sách user
- */
-router.get('/:subjectId', subjectController.getSubjectById)
-export default router
+const subjectRoute = Router()
+
+subjectRoute.get('/all', subjectController.getAllSubject)
+
+subjectRoute.post('/new', subjectController.createSubject)
+
+subjectRoute.put('/:subjectId', subjectController.updateSubject)
+
+subjectRoute.get('/:subjectId', subjectController.getSubjectById)
+
+subjectRoute.get('/:subjectId/files', authenticate, fileController.getFilesBySubjectId)
+
+export default subjectRoute

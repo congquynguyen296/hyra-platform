@@ -21,6 +21,7 @@ class SubjectController {
       result: data
     })
   }
+
   async getSubjectById(req: Request, res: Response) {
     console.log(req)
     console.log('Get subject controller', req?.params?.subjectId)
@@ -31,6 +32,7 @@ class SubjectController {
       result: data
     })
   }
+
   async createSubject(req: Request, res: Response) {
     console.log('Create subject controller', req?.user?.userId)
     console.log(req)
@@ -56,6 +58,7 @@ class SubjectController {
       }
     })
   }
+
   async updateSubject(req: Request, res: Response) {
     console.log('Update subject controller', req?.user?.userId)
     console.log(req)

@@ -1,7 +1,7 @@
 import { IsOptional, IsInt, Min, Max, IsString, IsIn, IsNotEmpty } from 'class-validator'
 import { Type, Transform } from 'class-transformer'
 
-export class GenerateQuizDto {
+export class GenerateQuizDTO {
   @IsOptional()
   @Type(() => Number)
   @IsInt()

@@ -2,8 +2,8 @@
 import { StatusCodes } from 'http-status-codes'
 import { FileModel, IFile } from '~/models/file.model'
 import { SubjectModel } from '~/models/subject.model'
-import { Quiz } from '~/models/quiz.model'
 import ApiError from '~/middleware/ApiError'
+import { countQuizzesByFileId, deleteQuizzesByFileId } from './quiz.service'
 import { uploadToCloudinary, deleteFromCloudinary, formatFileSize } from '~/utils/cloudinaryUtil'
 import path from 'path'
 import fs from 'fs'
@@ -99,9 +99,9 @@ class FileService {
     // Đếm số lượng summaries và quizzes cho mỗi file
     const filesWithCounts = await Promise.all(
       files.map(async (file) => {
-        const quizCount = await Quiz.countDocuments({ fileId: file._id })
+        const quizCount = await countQuizzesByFileId(file._id)
 
-        return this.formatFileResponse(file as IFile, subject.name, quizCount)
+        return this.formatFileResponse(file as unknown as IFile, subject.name, quizCount)
       })
     )
 
@@ -257,9 +257,9 @@ class FileService {
       }
 
       // Đếm số lượng quizzes
-      const quizCount = await Quiz.countDocuments({ fileId: file._id })
+      const quizCount = await countQuizzesByFileId(file._id)
 
-      return this.formatFileResponse(file as IFile, subject.name, quizCount)
+      return this.formatFileResponse(file as unknown as IFile, subject.name, quizCount)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // Nếu là ApiError thì ném lại, còn lỗi khác thì log và ném lỗi 500
@@ -316,8 +316,8 @@ class FileService {
       $pull: { children: file._id }
     })
 
-    // TODO: Xóa tất cả quizzes liên quan đến file này
-    await Quiz.deleteMany({ fileId: fileId })
+    // Xóa tất cả quizzes và questions liên quan đến file này
+    await deleteQuizzesByFileId(fileId)
   }
 
   /**
@@ -366,10 +366,10 @@ class FileService {
     // Đếm số lượng quizzes cho mỗi file
     const filesWithCounts = await Promise.all(
       files.map(async (file) => {
-        const quizCount = await Quiz.countDocuments({ fileId: file._id })
+        const quizCount = await countQuizzesByFileId(file._id)
         const subjectName = subjectMap.get(file.subjectId?.toString() || '') || 'Unknown'
 
-        return this.formatFileResponse(file as IFile, subjectName, quizCount)
+        return this.formatFileResponse(file as unknown as IFile, subjectName, quizCount)
       })
     )
 
@@ -426,10 +426,10 @@ class FileService {
     // Đếm số lượng quizzes cho mỗi file
     const filesWithCounts = await Promise.all(
       files.map(async (file) => {
-        const quizCount = await Quiz.countDocuments({ fileId: file._id })
+        const quizCount = await countQuizzesByFileId(file._id)
         const subjectName = subjectMap.get(file.subjectId?.toString() || '') || 'Unknown'
 
-        return this.formatFileResponse(file as IFile, subjectName, quizCount)
+        return this.formatFileResponse(file as unknown as IFile, subjectName, quizCount)
       })
     )
 

@@ -113,16 +113,11 @@ export const createQuiz = async (fileId: string, numQuestions: number, difficult
     console.log('Created question docs hêlooo:', questionDocs)
 
     try {
-      Question.insertMany(questionDocs)
-        .then((result) => {
-          const ids = result.map((doc) => doc._id)
-          console.log('✔ Insert thành công!', ids)
-        })
-        .catch((err) => {
-          console.error('❌ Insert thất bại!', err)
-        })
+      await Question.insertMany(questionDocs)
+      console.log('✔ Insert questions thành công!')
     } catch (e) {
-      console.error('Failed to insert question docs', e)
+      console.error('❌ Insert questions thất bại!', e)
+      throw e
     }
 
     // increment quizCount on file
@@ -297,7 +292,7 @@ export const getAllQuizByFileId = async (fileId: string): Promise<IQuiz[]> => {
     .sort({ createdAt: -1 }) // Sort by newest first
     .lean()
 
-  return quizzes as IQuiz[]
+  return quizzes as unknown as IQuiz[]
 }
 
 export const getAllQuizzes = async (userId: string): Promise<IQuiz[]> => {
@@ -350,6 +345,37 @@ export const getAllQuizzes = async (userId: string): Promise<IQuiz[]> => {
   return quizzes
 }
 
+/**
+ * Đếm số lượng quiz của một file
+ */
+export const countQuizzesByFileId = async (fileId: Types.ObjectId | string): Promise<number> => {
+  const fileObjectId = typeof fileId === 'string' ? new Types.ObjectId(fileId) : fileId
+  return await Quiz.countDocuments({ fileId: fileObjectId })
+}
+
+/**
+ * Xóa tất cả quiz và questions liên quan đến một file
+ */
+export const deleteQuizzesByFileId = async (fileId: string): Promise<void> => {
+  if (!Types.ObjectId.isValid(fileId)) {
+    throw new Error('Invalid fileId format')
+  }
+
+  const fileObjectId = new Types.ObjectId(fileId)
+
+  // Lấy tất cả quiz của file
+  const quizzes = await Quiz.find({ fileId: fileObjectId }).select('_id').lean()
+  const quizIds = quizzes.map((q) => q._id)
+
+  // Xóa tất cả questions của các quiz đó
+  if (quizIds.length > 0) {
+    await Question.deleteMany({ quizId: { $in: quizIds } })
+  }
+
+  // Xóa tất cả quiz
+  await Quiz.deleteMany({ fileId: fileObjectId })
+}
+
 export const getAllQuestionByQuiz = async (quizId: string): Promise<IQuestion[]> => {
   if (!Types.ObjectId.isValid(quizId)) {
     throw new Error('Invalid quizId format')
@@ -357,10 +383,13 @@ export const getAllQuestionByQuiz = async (quizId: string): Promise<IQuestion[]>
 
   const objectId = new Types.ObjectId(quizId)
 
-  const questions: IQuestion[] = await Question.find({ quizId: objectId }).lean()
+  // Lấy dữ liệu dưới dạng "lean" để trả về plain object,
+  // nhưng cần convert thủ công về kiểu IQuestion nếu cần thiết
+  const questions = await Question.find({ quizId: objectId }).lean()
 
-  // Đảm bảo luôn trả về array, không bao giờ undefined hoặc null
-  return questions || []
+  // Đảm bảo luôn trả về mảng, không bao giờ undefined hoặc null
+  // ép kiểu về IQuestion[] nếu chắc chắn cấu trúc trả về ổn định
+  return (questions as unknown as IQuestion[]) || []
 }
 
 export const submitQuiz = async (quizId: string, submitData: SubmitQuizRequest): Promise<SubmitQuizResult> => {

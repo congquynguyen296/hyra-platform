@@ -4,7 +4,7 @@ import { franc } from 'franc-min'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
 
-export const handleTranslateHtml = async (req: Request, res: Response) => {
+export const handleTranslateHTML = async (req: Request, res: Response) => {
   try {
     const { content, targetLang, model } = req.body || {}
 

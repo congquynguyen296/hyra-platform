@@ -1,6 +1,6 @@
 import { IsEmail } from 'class-validator'
 
-export class UpdateProfile {
+export class UpdateProfileDTO {
   name?: string
 
   @IsEmail()
