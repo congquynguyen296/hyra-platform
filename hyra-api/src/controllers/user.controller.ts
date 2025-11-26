@@ -5,7 +5,7 @@ import ApiError from '~/middleware/ApiError'
 
 class UserController {
   async getProfile(req: Request, res: Response) {
-    const userId = req.user.userId
+    const userId = req?.user?.userId as string
     const user = await userService.getUserById(userId)
     if (!user) {
       throw new ApiError(404, 'User not found')
@@ -18,7 +18,7 @@ class UserController {
   }
 
   async getUserStatistics(req: Request, res: Response) {
-    const userId = req.user.userId
+    const userId = req?.user?.userId as string
     const stats = await userService.getUserStatistics(userId)
     sendResponse(res, {
       code: 200,
@@ -28,7 +28,7 @@ class UserController {
   }
 
   async updateProfile(req: Request, res: Response) {
-    const userId = req.user.userId
+    const userId = req?.user?.userId as string
     const { name, email } = req.body
 
     if (!name && !email) {

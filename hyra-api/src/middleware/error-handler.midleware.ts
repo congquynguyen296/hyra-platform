@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/middleware/ApiError'
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 
 // Middleware xử lý lỗi tập trung trong ứng dụng Back-end NodeJS (ExpressJS)
-export const errorHandlingMiddleware = (err: ApiError, req: Request, res: Response, next: NextFunction) => {
+export const errorHandlingMiddleware = (err: ApiError, req: Request, res: Response) => {
   // Nếu dev không cẩn thận thiếu statusCode thì mặc định sẽ để code 500 INTERNAL_SERVER_ERROR
   if (!err.status) err.status = StatusCodes.INTERNAL_SERVER_ERROR
 

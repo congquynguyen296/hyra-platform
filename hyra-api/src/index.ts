@@ -5,12 +5,7 @@ import { CONNECT_DATABASES } from './config/connect'
 import { env } from '~/config/env'
 import { errorHandlingMiddleware } from '~/middleware/error-handler.midleware'
 import http from 'http'
-import debugRoutes from './routes/debug/debug.routes'
 import router from '~/routes/index'
-// import router from './routes/summarizeRoute'
-// import router from './routes/summarize.route'
-import ai_router from './routes/summarize.route'
-import fileRoutes from './routes/file.route'
 
 const START_SERVER = async () => {
   const app = express()

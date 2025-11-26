@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import amqp, { Channel } from 'amqplib'
 import { env } from '~/config/env'
 import { QueueNameEnum } from '~/enums/rabbitQueue.enum'

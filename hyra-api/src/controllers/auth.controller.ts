@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import googleAuthService from '../services/utils/googleAuth.service'

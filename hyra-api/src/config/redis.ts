@@ -19,7 +19,7 @@ const CONNECT_REDIS_DB = async (): Promise<RedisClientType> => {
     console.log('Redis connected')
   } catch (err) {
     // Có thể trả ApiError để middleware xử lý chung
-    throw new Error('Cannot connect to Redis')
+    throw new Error(`Cannot connect to Redis: ${err}`)
   }
 
   return redisClient
