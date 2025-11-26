@@ -1,4 +1,4 @@
-import { JwtPayloadDto } from '~/dto/request/Auth.dto'
+import { JwtPayloadDto } from '~/types/auth.types'
 import jwt from 'jsonwebtoken'
 import { env } from '~/config/env'
 import { TokenType } from '~/enums/tokenType.enum'

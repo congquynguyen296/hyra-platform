@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 import { env } from '~/config/env'
-import { NotificationDto, VerifyEmail } from '~/dto/request/notification.dto'
+import { NotificationDto, VerifyEmail } from '~/types/notification.types'
 import { QueueNameEnum } from '~/enums/rabbitQueue.enum'
 import { renderTemplate } from '~/utils/templateUtil'
 

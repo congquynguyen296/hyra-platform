@@ -7,7 +7,6 @@ import userRoutes from '~/routes/user.route'
 import fileRoutes from '~/routes/file.route'
 import ai_router from '~/routes/summarize.route'
 import quizRoute from './quiz.route'
-
 import auth from '~/middleware/authen.middleware'
 
 const IndexRouter: Router = express.Router()

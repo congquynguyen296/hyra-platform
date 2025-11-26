@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { ValidateSignature } from '~/utils/JwtUtil'
+import { ValidateSignature } from '~/utils/jwtUtil'
 import { TokenType } from '~/enums/tokenType.enum'
 
 const authenticate = async (req: Request, res: Response, next: NextFunction) => {

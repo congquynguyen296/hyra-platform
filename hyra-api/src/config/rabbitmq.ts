@@ -2,8 +2,8 @@
 import amqp, { Channel } from 'amqplib'
 import { env } from '~/config/env'
 import { QueueNameEnum } from '~/enums/rabbitQueue.enum'
-import nodemailService from '~/services/mails/nodemail.service'
-import { VerifyEmail } from '~/dto/request/notification.dto'
+import nodemailService from '~/services/nodemail.service'
+import { VerifyEmail } from '~/types/notification.types'
 
 const RabbitMQConf = {
   protocol: 'amqp',

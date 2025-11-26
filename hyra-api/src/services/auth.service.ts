@@ -3,10 +3,9 @@ import { StatusCodes } from 'http-status-codes'
 import qs from 'qs'
 import { env } from '~/config/env'
 import { UserModel } from '~/models/user.model'
-
-import { GoogleOauthToken, GoogleUserResult } from '~/dto/request/Auth.dto'
+import { GoogleOauthToken, GoogleUserResult } from '~/types/auth.types'
 import ApiError from '~/middleware/ApiError'
-import { GenerateSignature } from '~/utils/JwtUtil'
+import { GenerateSignature } from '~/utils/jwtUtil'
 import { TokenType } from '~/enums/tokenType.enum'
 
 // function dùng để exchance token -> dùng authorization code

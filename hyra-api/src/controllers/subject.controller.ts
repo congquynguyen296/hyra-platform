@@ -4,7 +4,7 @@ import subjectService, { CreateSubjectInput, UpdateSubjectInput } from '~/servic
 
 class SubjectController {
   async getAllSubject(req: Request, res: Response) {
-    const userId = req.user?.userId
+    const userId = req?.user?.userId
     if (!userId) {
       return sendResponse(res, {
         code: 400,
