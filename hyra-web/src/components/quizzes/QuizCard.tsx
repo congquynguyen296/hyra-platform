@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Brain, Clock, RotateCcw } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { QuizApiResponse } from '@/services/file.service';
+import { QuizApiResponse } from '@/types/Quiz';
 
 interface QuizCardProps {
   quiz: QuizApiResponse;

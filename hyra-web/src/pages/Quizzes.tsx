@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { QuizCard } from '@/components/quizzes/QuizCard';
 import { QuizEmptyState } from '@/components/quizzes/QuizEmptyState';
-import fileService, { QuizApiResponse } from '@/services/file.service';
+import fileService from '@/services/file.service';
+import { QuizApiResponse } from '@/types/Quiz';
 import { toast } from 'sonner';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Button } from '@/components/ui/button';

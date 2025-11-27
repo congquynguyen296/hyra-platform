@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import fileService, { FileDto } from "@/services/file.service";
-import { toast } from 'sonner';
+import fileService from "@/services/file.service";
+import { FileDto } from "@/types/File";
+import { toast } from "sonner";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, Calendar, ArrowLeft } from "lucide-react";
@@ -8,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SummaryEmptyState } from "@/components/summaries/SummaryEmptyState";
 
 export default function Summaries() {
   const navigate = useNavigate();
@@ -28,24 +30,25 @@ export default function Summaries() {
       if (response.result?.files) {
         // Filter only files with summaries
         const filesWithSummaries = response.result.files.filter(
-          file => file.summaryCount && file.summaryCount > 0
+          (file) => file.summaryCount && file.summaryCount > 0
         );
         setFiles(filesWithSummaries);
       } else {
-        toast.error('Failed to load files');
+        toast.error("Failed to load files");
       }
     } catch (error) {
-      console.error('Error loading files:', error);
-      toast.error('Failed to load files');
+      console.error("Error loading files:", error);
+      toast.error("Failed to load files");
     } finally {
       setLoading(false);
     }
   };
 
   // Filter files based on search query
-  const filteredFiles = files.filter(file =>
-    file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    file.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFiles = files.filter(
+    (file) =>
+      file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.subject?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Pagination logic
@@ -56,7 +59,7 @@ export default function Summaries() {
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goToPrevPage = () => {
@@ -79,7 +82,11 @@ export default function Summaries() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner message="Loading summaries..." variant="inline" size="lg" />
+        <LoadingSpinner
+          message="Loading summaries..."
+          variant="inline"
+          size="lg"
+        />
       </div>
     );
   }
@@ -89,11 +96,14 @@ export default function Summaries() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Summaries</h1>
-          <p className="text-muted-foreground">View and manage your file summaries</p>
+          <p className="text-muted-foreground">
+            View and manage your file summaries
+          </p>
         </div>
         {files.length > 0 && (
           <div className="text-sm text-muted-foreground">
-            {filteredFiles.length} {filteredFiles.length === 1 ? 'summary' : 'summaries'}
+            {filteredFiles.length}{" "}
+            {filteredFiles.length === 1 ? "summary" : "summaries"}
             {searchQuery && ` (filtered from ${files.length})`}
           </div>
         )}
@@ -112,25 +122,13 @@ export default function Summaries() {
 
       {/* Files Grid */}
       {files.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16 space-y-4">
-            <div className="w-24 h-24 rounded-2xl bg-purple-100 flex items-center justify-center">
-              <FileText className="h-12 w-12 text-purple-600" />
-            </div>
-            <div className="text-center space-y-2">
-              <h3 className="text-xl font-semibold text-gray-900">
-                No summaries yet
-              </h3>
-              <p className="text-gray-600 max-w-md">
-                Upload files with summary generation enabled to see them here
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <SummaryEmptyState />
       ) : filteredFiles.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">
-            <p className="text-gray-600">No files found matching "{searchQuery}"</p>
+            <p className="text-gray-600">
+              No files found matching "{searchQuery}"
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -169,13 +167,15 @@ export default function Summaries() {
                       </div>
                       <div className="mt-3 flex items-center gap-2 text-sm">
                         <span className="text-purple-600 font-medium">
-                          {file.summaryCount} {file.summaryCount === 1 ? 'summary' : 'summaries'}
+                          {file.summaryCount}{" "}
+                          {file.summaryCount === 1 ? "summary" : "summaries"}
                         </span>
                         {file.quizCount !== undefined && file.quizCount > 0 && (
                           <>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600">
-                              {file.quizCount} {file.quizCount === 1 ? 'quiz' : 'quizzes'}
+                              {file.quizCount}{" "}
+                              {file.quizCount === 1 ? "quiz" : "quizzes"}
                             </span>
                           </>
                         )}
@@ -202,17 +202,19 @@ export default function Summaries() {
               </Button>
 
               <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => goToPage(page)}
-                    className="min-w-[40px]"
-                  >
-                    {page}
-                  </Button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => goToPage(page)}
+                      className="min-w-[40px]"
+                    >
+                      {page}
+                    </Button>
+                  )
+                )}
               </div>
 
               <Button

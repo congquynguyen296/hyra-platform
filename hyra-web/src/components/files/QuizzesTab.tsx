@@ -14,9 +14,11 @@ import {
   Loader2,
   RotateCcw,
 } from "lucide-react";
-import fileService, { QuizApiResponse } from "@/services/file.service";
+import fileService from "@/services/file.service";
+import { QuizApiResponse } from "@/types/Quiz";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 interface QuizzesTabProps {
   fileId: string;
@@ -55,6 +57,7 @@ export function QuizzesTab({ fileId, onCountChange }: QuizzesTabProps) {
   const [quizzes, setQuizzes] = useState<QuizApiResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch quizzes
   useEffect(() => {
     const loadQuizzes = async () => {
       try {
@@ -75,18 +78,33 @@ export function QuizzesTab({ fileId, onCountChange }: QuizzesTabProps) {
 
     loadQuizzes();
   }, [fileId, onCountChange]);
-  if (loading) {
+
+  // Loading data
+  if (!loading) {
     return (
-      <Card className="border-0 shadow-xl">
-        <CardContent className="py-16">
-          <div className="flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="relative border rounded-lg bg-white overflow-hidden h-[75vh] mt-2">
+          {loading && (
+            <div className="flex items-center justify-center min-h-[60vh]">
+              <LoadingSpinner
+                message="Loading quizzes..."
+                variant="inline"
+                size="lg"
+              />
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 
+  const hasAttempted = (quiz: QuizApiResponse) => quiz.highestScore !== -1;
+
+  const handleStart = (quizId: string) => {
+    navigate(`/quiz/${quizId}/questions`);
+  };
+
+  // Quizzes size 0
   if (quizzes.length === 0) {
     return (
       <Card className="border-0 shadow-xl">
@@ -110,12 +128,6 @@ export function QuizzesTab({ fileId, onCountChange }: QuizzesTabProps) {
       </Card>
     );
   }
-
-  const hasAttempted = (quiz: QuizApiResponse) => quiz.highestScore !== -1;
-
-  const handleStart = (quizId) => {
-    navigate(`/quiz/${quizId}/questions`);
-  };
 
   return (
     <div className="space-y-4">

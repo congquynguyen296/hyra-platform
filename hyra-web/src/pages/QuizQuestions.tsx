@@ -4,10 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Brain, CheckCircle2, Circle } from "lucide-react";
-import fileService, {
-  Question,
-  QuizApiResponse,
-} from "@/services/file.service";
+import fileService from "@/services/file.service";
+import { Question, QuizApiResponse } from "@/types/Quiz";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 

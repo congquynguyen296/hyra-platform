@@ -39,11 +39,6 @@ export function UploadFileDialog({
     setIsLoading(true);
     try {
       const res = await FileService.uploadFile(file, fileName, subjectId);
-      
-      toast({
-        title: 'Upload successful',
-        description: res?.message ?? 'File uploaded and queued for processing.',
-      });
 
       setFileName('');
       setFile(null);
@@ -60,10 +55,6 @@ export function UploadFileDialog({
         typeof err === 'object' && err !== null && 'message' in err
           ? (err as { message?: string }).message
           : undefined;
-      toast({
-        title: 'Upload failed',
-        description: message ?? 'An error occurred while uploading the file.',
-      });
     } finally {
       setIsLoading(false);
     }

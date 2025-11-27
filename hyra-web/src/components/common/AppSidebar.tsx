@@ -1,8 +1,16 @@
-import { Home, FolderOpen, BookOpen, Brain, ChevronRight, LogOut, User } from 'lucide-react';
-import { NavLink } from '@/components/common/NavLink';
-import { useAppStore } from '@/store/useAppStore';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useNavigate } from 'react-router';
+import {
+  Home,
+  FolderOpen,
+  BookOpen,
+  Brain,
+  ChevronRight,
+  LogOut,
+  User,
+} from "lucide-react";
+import { NavLink } from "@/components/common/NavLink";
+import { useAppStore } from "@/store/useAppStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useNavigate } from "react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -13,72 +21,60 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
-  SidebarFooter
-} from '@/components/ui/sidebar';
+  SidebarFooter,
+} from "@/components/ui/sidebar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
-import userService from '@/services/user.service';
-import subjectService, { SubjectStatsDTO } from '@/services/subject.service';
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import userService from "@/services/user.service";
+import subjectService from "@/services/subject.service";
+import { SubjectStatsDTO } from "@/types/Subject";
 
 const menuItems = [
-  { title: 'Dashboard', url: '/', icon: Home },
-  { title: 'Subjects', url: '/subjects', icon: FolderOpen },
-  { title: 'My Summaries', url: '/summaries', icon: BookOpen },
-  { title: 'Quiz History', url: '/quizzes', icon: Brain },
+  { title: "Dashboard", url: "/", icon: Home },
+  { title: "Subjects", url: "/subjects", icon: FolderOpen },
+  { title: "My Summaries", url: "/summaries", icon: BookOpen },
+  { title: "Quiz History", url: "/quizzes", icon: Brain },
 ];
 
 export function AppSidebar() {
-  const {user } = useAppStore();
+  const { user } = useAppStore();
   const navigate = useNavigate();
   const { data, setData } = useAuthStore();
-  const logout = () => setData(null)
-
-  //setData({...data, accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTE4MmM1MjA4ZDYyOTgyOTNmYmVlZDEiLCJ0b2tlblR5cGUiOiIxNW0iLCJpYXQiOjE3NjMxOTM5MzYsImV4cCI6MTc3MDk2OTkzNn0.Pi5c6LKz_wHlv6jTNf-N1IOAkjONyuDMzhwEsGfU7Bc'})
+  const logout = () => setData(null);
 
   const [subjects, setSubjects] = useState<SubjectStatsDTO[]>([]);
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await userService.getUserProfile();
-  //       if (response && response.code === 200 && response.result) {
-  //         setData(response.result);
-  //       }
-  //     } catch (error) {
-  //       console.error('Failed to fetch user data:', error);
-  //     }
-  //   }
-    
-  // }, [data]);
 
   const fetchSubjects = async () => {
-        const data = await subjectService.getAllSubjectByUser()
-        if (data && data.code && data.code === 200)
-          setSubjects(data.result)
-      }
-    useEffect(() => {
-      fetchSubjects()
-    },[])
+    const data = await subjectService.getAllSubjectByUser();
+    if (data && data.code && data.code === 200) setSubjects(data.result);
+  };
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border px-6 py-4">
-        <div className="flex items-center gap-2">
-          <Brain className="h-6 w-6 text-sidebar-primary" />
+        <div className="flex items-center gap-4">
+          <img src="/logo.avif" className="h-10 w-10 text-sidebar-primary" />
           <div>
-            <h2 className="text-lg font-semibold text-sidebar-foreground">Smart Knowledge</h2>
-            <p className="text-xs text-sidebar-foreground/70">Summarizer & Quiz</p>
+            <h2 className="text-lg font-semibold text-sidebar-foreground">
+              Hyra
+            </h2>
+            <p className="text-xs text-sidebar-foreground/70">
+              AI platform for Huynh My Huyen
+            </p>
           </div>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -129,7 +125,7 @@ export function AppSidebar() {
                     {subjects.length > 5 && (
                       <SidebarMenuItem>
                         <SidebarMenuButton
-                          onClick={() => navigate('/subjects')}
+                          onClick={() => navigate("/subjects")}
                           className="text-xs text-sidebar-foreground/60 hover:text-sidebar-foreground cursor-pointer"
                         >
                           View all {subjects.length} subjects →
@@ -146,14 +142,17 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3 p-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-            <img src={data?.avatarUrl || ''} alt="User Avatar" className="h-10 w-10 rounded-full" />
+            <img
+              src={data?.avatarUrl || ""}
+              className="h-10 w-10 rounded-full"
+            />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-sidebar-foreground truncate">
-              {data?.name || 'User'}
+              {data?.name || "User"}
             </p>
             <p className="text-xs text-sidebar-foreground/60 truncate">
-              {data?.email || 'user@example.com'}
+              {data?.email || "user@example.com"}
             </p>
           </div>
           <Button
@@ -161,8 +160,8 @@ export function AppSidebar() {
             size="icon"
             onClick={() => {
               logout();
-              navigate('/login');
-              toast.success('Logged out successfully');
+              navigate("/login");
+              toast.success("Logged out successfully");
             }}
             className="hover:bg-red-50 hover:text-red-600"
             title="Logout"

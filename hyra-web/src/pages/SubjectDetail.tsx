@@ -21,10 +21,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import subjectService, {
-  SubjectDetailDTO,
-  SubjectStatsDTO,
-} from "@/services/subject.service";
+import subjectService from "@/services/subject.service";
+import { SubjectDetailDTO } from "@/types/Subject";
 
 export default function SubjectDetail() {
   const { subjectId } = useParams<{ subjectId: string }>();
@@ -62,7 +60,11 @@ export default function SubjectDetail() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner message="Loading subject..." variant="inline" size="lg" />
+        <LoadingSpinner
+          message="Loading subject..."
+          variant="inline"
+          size="lg"
+        />
       </div>
     );
   }

@@ -2,7 +2,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, FileText, Calendar } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import fileService, { FileDto } from '@/services/file.service';
+import fileService from '@/services/file.service';
+import { FileDto } from '@/types/File';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 interface SummarySearchProps {

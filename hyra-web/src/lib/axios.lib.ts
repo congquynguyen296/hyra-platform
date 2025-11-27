@@ -1,5 +1,6 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '../store/useAuthStore'
+import { API_BASE_URL, API_PREFIX } from '@/routes/apiRoutes'
 
 function getAccessToken(): string | null {
   try {
@@ -26,8 +27,9 @@ class AxiosClient {
   public axiosInstance: AxiosInstance
 
   constructor() {
+    const normalizedBase = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL
     this.axiosInstance = axios.create({
-      baseURL: 'http://localhost:8017/hackathon/',
+      baseURL: `${normalizedBase}${API_PREFIX}`,
       headers: {
         'Content-Type': 'application/json'
       }

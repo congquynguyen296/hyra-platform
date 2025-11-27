@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -31,16 +32,14 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [searchParams] = useSearchParams()
-  const code = searchParams.get('code')
-  const { data, setData } = useAuthStore()
-  
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+  const { data, setData } = useAuthStore();
 
   useEffect(() => {
-
     const exchangeTokenForOauth2 = async (authorizationCode: string) => {
       try {
-        const response = await userService.loginWithGoogle(authorizationCode)
+        const response = await userService.loginWithGoogle(authorizationCode);
 
         if (response && response.code === 200) {
           setData({
@@ -49,22 +48,24 @@ export default function Login() {
             name: response.result.name,
             email: response.result.email,
             avatarUrl: response.result.image,
-          })
-          toast.success('Đăng nhập thành công bằng Google')
-          navigate('/')
+          });
+          toast.success("Đăng nhập thành công bằng Google");
+          navigate("/");
         } else {
-          toast.error(response.message)
+          toast.error(response.message);
         }
       } catch (error: unknown) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        toast.error((error as any)?.response.data.message || 'Có lỗi trong quá trình xử lý')
+        toast.error(
+          (error as any)?.response.data.message ||
+            "Có lỗi trong quá trình xử lý"
+        );
       }
-    }
+    };
 
     if (code) {
-      exchangeTokenForOauth2(code)
+      exchangeTokenForOauth2(code);
     }
-  }, [code])
+  }, [code]);
 
   const {
     register,
@@ -76,7 +77,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       rememberMe: false,
-    }
+    },
   });
 
   const rememberMe = watch("rememberMe");
@@ -90,19 +91,19 @@ export default function Login() {
   //handle login with google
   const handleLoginWithGoogle = () => {
     try {
-      const authUri = import.meta.env.VITE_GOOGLE_AUTH_URI as string
-      const callbackUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI as string
-      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string
+      const authUri = import.meta.env.VITE_GOOGLE_AUTH_URI as string;
+      const callbackUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI as string;
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
       const targetUrl = `${authUri}?redirect_uri=${encodeURIComponent(
         callbackUri
-      )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`
+      )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
 
-      window.location.href = targetUrl
+      window.location.href = targetUrl;
     } catch (error: unknown) {
-      toast.error(error?.toString() || 'Có lỗi trong quá trình xử lý' )
+      toast.error(error?.toString() || "Có lỗi trong quá trình xử lý");
     }
-  }
+  };
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -127,8 +128,8 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Brain className="h-8 w-8 text-primary" />
+          <div className="mx-auto flex items-center justify-center rounded-full">
+            <img src="/logo.avif" className="h-20 w-20 text-primary" />
           </div>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground">
             Welcome Back
@@ -213,7 +214,13 @@ export default function Login() {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <Button type="button" variant='destructive' className="w-full" disabled={isLoading} onClick={handleLoginWithGoogle}>
+            <Button
+              type="button"
+              variant="destructive"
+              className="w-full"
+              disabled={isLoading}
+              onClick={handleLoginWithGoogle}
+            >
               <FaGoogle className="mr-2" />
               {isLoading ? "Signing in..." : "Sign In with Google"}
             </Button>
@@ -229,14 +236,6 @@ export default function Login() {
                 Register
               </Link>
             </p>
-          </div>
-
-          <div className="mt-6 rounded-md bg-muted/50 p-4">
-            <p className="text-xs text-muted-foreground mb-2">
-              Demo Credentials:
-            </p>
-            <p className="text-xs font-mono">quy@student.edu / password123</p>
-            <p className="text-xs font-mono">student@example.edu / abc123456</p>
           </div>
         </div>
       </div>
