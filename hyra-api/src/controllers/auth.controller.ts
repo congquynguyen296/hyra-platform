@@ -12,18 +12,18 @@ class AuthController {
       const code = req.query.code as string
 
       if (!code) {
-        throw new ApiError(StatusCodes.UNAUTHORIZED, 'Không tìm thấy authorization code !')
+        throw new ApiError(StatusCodes.UNAUTHORIZED, 'Không tìm thấy authorization code!')
       }
 
       const result = await googleAuthService.loginGoogle({ code })
 
       sendResponse(res, {
         code: StatusCodes.OK,
-        message: 'Xác thực google thành công !',
+        message: 'Xác thực google thành công!',
         result: result
       })
     } catch (err: any) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, err.message || 'Đăng nhập Google thất bại !, vui lòng thử lại')
+      throw new ApiError(StatusCodes.BAD_REQUEST, err.message)
     }
   }
 }

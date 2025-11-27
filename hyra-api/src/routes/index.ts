@@ -13,7 +13,7 @@ const IndexRouter: Router = express.Router()
 IndexRouter.use('/auth', authRoutes)
 
 // Public Cloudinary proxy (must be before auth middleware so it's accessible without auth)
-IndexRouter.use('/', cloudinaryRoutes)
+IndexRouter.use('/cloudinary', cloudinaryRoutes)
 
 IndexRouter.use(auth)
 

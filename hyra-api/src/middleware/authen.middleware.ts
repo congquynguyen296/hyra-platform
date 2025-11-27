@@ -12,7 +12,7 @@ const authenticate = async (req: Request, res: Response, next: NextFunction) => 
     req.user = payload
     next()
   } catch (error) {
-    next(error) // sẽ được xử lý ở middleware handle error của bạn
+    next(error) // sẽ được xử lý ở middleware handle error
   }
 }
 

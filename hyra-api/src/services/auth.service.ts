@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 import qs from 'qs'
@@ -28,8 +29,8 @@ const getGoogleOauthToken = async ({ code }: { code: string }): Promise<GoogleOa
 
     return data
   } catch (err: any) {
-    console.log('Failed to fetch Google Oauth Tokens', err)
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Đăng nhập Google thất bại !, vui lòng thử lại')
+    console.log('Failed to fetch Google Oauth Tokens', err.response?.data)
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Đăng nhập Google thất bại!')
   }
 }
 
@@ -54,7 +55,7 @@ async function getGoogleUser({
     return data
   } catch (err: any) {
     console.log(err)
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Đăng nhập Google thất bại !, vui lòng thử lại')
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Đăng nhập Google thất bại!')
   }
 }
 
@@ -66,13 +67,10 @@ const loginGoogle = async ({ code }: { code: string }) => {
     access_token
   })
 
-  // chỉ cho phép email sinh viên của HCMUTE
-  if (
-    !userData.email ||
-    typeof userData.email !== 'string' ||
-    !userData.email.toLowerCase().endsWith('@student.hcmute.edu.vn')
-  ) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Chỉ cho phép email có đuôi @student.hcmute.edu.vn')
+  const email = typeof userData.email === 'string' ? userData.email.toLowerCase() : ''
+
+  if (!email || (!email.endsWith('.vn') && !email.endsWith('.com'))) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Email đăng nhập không hợp lệ!')
   }
 
   // tìm kiếm user xem user này đã được onboard vào hệ thống chưa

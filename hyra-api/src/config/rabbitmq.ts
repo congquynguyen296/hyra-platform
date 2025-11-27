@@ -110,8 +110,6 @@ class RabbitClient {
   ): Promise<void> {
     if (!RabbitClient.channel) throw new Error('RabbitMQ channel is not initialized')
 
-    //await RabbitClient.bindQueueToExchange(queue, exchange, routingKeys, exchangeType)
-
     RabbitClient.channel.consume(
       queue,
       async (msg) => {

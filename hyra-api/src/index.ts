@@ -22,7 +22,7 @@ const START_SERVER = async () => {
 
   app.use(cors(corsOptions))
 
-  app.use('/hackathon', router)
+  app.use('/hyra-api/v1', router)
   app.use(errorHandlingMiddleware)
 
   // tạo server duy nhất
@@ -33,7 +33,7 @@ const START_SERVER = async () => {
   const port = Number(env.APP_PORT)
 
   server.listen(port, hostname, () => {
-    console.log(`Server đang chạy trên: ${hostname}:${port}/`)
+    console.log(`Server đang chạy trên: ${hostname}:${port}/hyra-api/v1`)
   })
 }
 
