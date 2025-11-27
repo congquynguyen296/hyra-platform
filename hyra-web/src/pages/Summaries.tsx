@@ -81,7 +81,7 @@ export default function Summaries() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh] py-6">
         <LoadingSpinner
           message="Loading summaries..."
           variant="inline"
@@ -92,7 +92,7 @@ export default function Summaries() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Summaries</h1>

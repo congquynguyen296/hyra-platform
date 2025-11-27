@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Brain, CheckCircle2, Circle } from "lucide-react";
 import fileService from "@/services/file.service";
@@ -147,16 +153,20 @@ export default function QuizQuestions() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:p-8">
         <div className="max-w-4xl mx-auto flex items-center justify-center h-screen">
-          <LoadingSpinner message="Loading questions..." variant="inline" size="lg" />
+          <LoadingSpinner
+            message="Loading questions..."
+            variant="inline"
+            size="lg"
+          />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="space-y-4">
@@ -216,8 +226,8 @@ export default function QuizQuestions() {
         <div className="space-y-6">
           {questions.map((question, index) => {
             // In review mode, use userAnswer from API; otherwise use selectedAnswer from state
-            const selectedAnswer = isReviewMode 
-              ? question.userAnswer 
+            const selectedAnswer = isReviewMode
+              ? question.userAnswer
               : selectedAnswers[question._id];
 
             return (
@@ -338,12 +348,12 @@ export default function QuizQuestions() {
                 </CardContent>
                 <CardFooter>
                   <p>
-                      {isReviewMode && selectedAnswer !== undefined && (
-                        <span className="text-sm text-gray-600 italic">
-                          Explaning: {question.explanation || "N/A"}
-                        </span>
-                      )}
-                    </p>
+                    {isReviewMode && selectedAnswer !== undefined && (
+                      <span className="text-sm text-gray-600 italic">
+                        Explaning: {question.explanation || "N/A"}
+                      </span>
+                    )}
+                  </p>
                 </CardFooter>
               </Card>
             );

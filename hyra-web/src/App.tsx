@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/common/AppSidebar";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
-import Index from "./pages/Index";
 import Subjects from "./pages/Subjects";
 import Summaries from "./pages/Summaries";
 import Quizzes from "./pages/Quizzes";
@@ -16,6 +15,9 @@ import NotFound from "./pages/NotFound";
 import SubjectDetail from "./pages/SubjectDetail";
 import FileDetail from "./pages/FileDetail";
 import QuizQuestions from "./pages/QuizQuestions";
+import ChatIcon from "./components/chat/ChatIcon";
+import Chat from "./pages/Chat";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +37,9 @@ const App = () => (
                 <SidebarProvider>
                   <div className="flex min-h-screen w-full">
                     <AppSidebar />
-                    <main className="flex-1 overflow-auto bg-background p-8">
+                    <main className="flex-1 overflow-auto bg-background px-8">
                       <Routes>
-                        <Route path="/" element={<Index />} />
+                        <Route path="/" element={<Dashboard />} />
                         <Route path="/subjects" element={<Subjects />} />
                         <Route
                           path="/subject/:subjectId"
@@ -47,20 +49,19 @@ const App = () => (
                           path="/subject/:subjectId/file/:fileId"
                           element={<FileDetail />}
                         />
-                        <Route
-                          path="/files/:fileId"
-                          element={<FileDetail />}
-                        />
+                        <Route path="/files/:fileId" element={<FileDetail />} />
                         <Route
                           path="/quiz/:quizId/questions"
                           element={<QuizQuestions />}
                         />
                         <Route path="/summaries" element={<Summaries />} />
                         <Route path="/quizzes" element={<Quizzes />} />
+                        <Route path="/chat" element={<Chat />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>
                   </div>
+                  <ChatIcon />
                 </SidebarProvider>
               </ProtectedRoute>
             }

@@ -59,7 +59,7 @@ export default function SubjectDetail() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen py-6">
         <LoadingSpinner
           message="Loading subject..."
           variant="inline"
@@ -71,7 +71,7 @@ export default function SubjectDetail() {
 
   if (!subject) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen py-6">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold text-gray-900">
             Subject Not Found
@@ -134,7 +134,7 @@ export default function SubjectDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

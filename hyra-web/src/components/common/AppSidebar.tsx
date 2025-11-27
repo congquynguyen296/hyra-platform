@@ -5,7 +5,7 @@ import {
   Brain,
   ChevronRight,
   LogOut,
-  User,
+  Ghost,
 } from "lucide-react";
 import { NavLink } from "@/components/common/NavLink";
 import { useAppStore } from "@/store/useAppStore";
@@ -31,7 +31,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import userService from "@/services/user.service";
 import subjectService from "@/services/subject.service";
 import { SubjectStatsDTO } from "@/types/Subject";
 
@@ -40,6 +39,7 @@ const menuItems = [
   { title: "Subjects", url: "/subjects", icon: FolderOpen },
   { title: "My Summaries", url: "/summaries", icon: BookOpen },
   { title: "Quiz History", url: "/quizzes", icon: Brain },
+  { title: "Hyra Chat", url: "/chat", icon: Ghost },
 ];
 
 export function AppSidebar() {
