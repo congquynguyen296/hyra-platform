@@ -96,6 +96,7 @@ class SubjectService {
 
     return subjects
   }
+
   async getSubjectById(subjectId: string): Promise<SubjectDetailDTO> {
     const subjects = await SubjectModel.aggregate([
       {
@@ -168,6 +169,7 @@ class SubjectService {
       }
     }
   }
+
   async updateSubject(userId: string, dto: UpdateSubjectInput) {
     const updated = await SubjectModel.findOneAndUpdate(
       {
@@ -191,6 +193,19 @@ class SubjectService {
       name: updated?.name,
       color: updated?.color
     }
+  }
+
+  async deleteSubject(userId: string, subjectId: string): Promise<void> {
+    const subject = await SubjectModel.findOne({
+      _id: subjectId,
+      userId: userId
+    })
+
+    if (!subject) {
+      throw new Error("Subject not found or you don't have permission")
+    }
+
+    await SubjectModel.deleteOne({ _id: subjectId })
   }
 }
 

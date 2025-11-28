@@ -24,7 +24,7 @@ class SubjectController {
 
   async getSubjectById(req: Request, res: Response) {
     console.log(req)
-    console.log('Get subject controller', req?.params?.subjectId)
+    // console.log('Get subject controller', req?.params?.subjectId)
     const data = await subjectService.getSubjectById(req?.params?.subjectId)
     sendResponse(res, {
       code: 200,
@@ -60,8 +60,6 @@ class SubjectController {
   }
 
   async updateSubject(req: Request, res: Response) {
-    console.log('Update subject controller', req?.user?.userId)
-    console.log(req)
     const dto: UpdateSubjectInput = {
       name: req.body.name,
       id: req.body.id
@@ -81,6 +79,34 @@ class SubjectController {
       result: {
         data
       }
+    })
+  }
+
+  async deleteSubject(req: Request, res: Response) {
+    const subjectId: string = req.params.subjectId
+
+    if (!subjectId) {
+      return sendResponse(res, {
+        code: 400,
+        message: 'Subject ID is required',
+        result: null
+      })
+    }
+
+    const userId = req.user?.userId as string
+    if (!userId) {
+      return sendResponse(res, {
+        code: 403,
+        message: 'Forbidden: User not have to this resource',
+        result: req.user
+      })
+    }
+
+    await subjectService.deleteSubject(userId, subjectId)
+    sendResponse(res, {
+      code: 200,
+      message: 'Delete subject successfully',
+      result: null
     })
   }
 }

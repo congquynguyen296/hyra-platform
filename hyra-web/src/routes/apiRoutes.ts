@@ -14,6 +14,7 @@ export const apiRoutes = {
     create: '/subjects/new',
     update: (subjectId: string) => `/subjects/${subjectId}`,
     detail: (subjectId: string) => `/subjects/${subjectId}`,
+    delete: (subjectId: string) => `/subjects/${subjectId}`,
     files: (subjectId: string) => `/subjects/${subjectId}/files`
   },
   files: {

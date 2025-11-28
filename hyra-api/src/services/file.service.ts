@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes'
 import { FileModel, IFile } from '~/models/file.model'
 import { SubjectModel } from '~/models/subject.model'
@@ -6,17 +5,7 @@ import ApiError from '~/middleware/ApiError'
 import { countQuizzesByFileId, deleteQuizzesByFileId } from './quiz.service'
 import { uploadToCloudinary, deleteFromCloudinary, formatFileSize } from '~/utils/cloudinaryUtil'
 import path from 'path'
-import fs from 'fs'
-import os from 'os'
-import RabbitClient from '~/config/rabbitmq'
-import { QueueNameEnum } from '~/enums/rabbitQueue.enum'
 import { Types } from 'mongoose'
-import { ObjectId } from 'mongodb'
-
-import { summarizeText } from './summarize.service'
-import { extractTextFromFile } from '~/utils/fileParser'
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
 
 /**
  * Interface cho file response
@@ -36,7 +25,8 @@ interface FileResponse {
     pages?: number
     language?: string
   }
-  summaryContent?: string
+  // TODO: Update một file sẽ có nhiều bản summaries cũng như nhiều bài quizzes
+  // summaryContent?: string
 }
 
 /**
@@ -64,7 +54,7 @@ class FileService {
     userId: string,
     subjectId: string,
     page: number = 1,
-    limit: number = 20
+    limit: number = 10
   ): Promise<{ files: FileResponse[]; pagination: PaginationResponse }> {
     // Kiểm tra subject có tồn tại và thuộc về user không
     const subject = await SubjectModel.findOne({
@@ -121,23 +111,8 @@ class FileService {
    * @param userId - ID của user
    * @param file - File từ multer
    * @param subjectId - ID của subject
-   * @param createSummary - Có tạo summary không
-   * @param generateQuiz - Có tạo quiz không
-   * @param quizQuestions - Số câu hỏi quiz
-   * @param quizDifficulty - Độ khó quiz
    */
-  async uploadFile(
-    userId: string,
-    file: Express.Multer.File,
-    subjectId: string,
-    createSummary: boolean = false,
-    generateQuiz: boolean = false,
-    quizQuestions: number = 10,
-    quizDifficulty: string = 'Medium',
-    uploadPreset?: string,
-    name?: string,
-    filePath?: string
-  ) {
+  async uploadFile(userId: string, file: Express.Multer.File, subjectId: string, name?: string) {
     // Kiểm tra subject có tồn tại và thuộc về user không
     const subject = await SubjectModel.findOne({
       _id: subjectId,
@@ -152,7 +127,12 @@ class FileService {
     const fileExtension = path.extname(file.originalname).toLowerCase()
 
     // Upload file lên Cloudinary với tên file gốc để giữ extension
-    const uploadResult = await uploadToCloudinary(file.buffer, file.originalname, 'hackathon-files', uploadPreset)
+    const folder = `hyra-platform/${userId}/${subjectId}` as string
+    const uploadResult = await uploadToCloudinary(file.buffer, file.originalname, folder)
+
+    if (!uploadResult) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Không thể tải file lên Cloudinary')
+    }
 
     const newFile = await FileModel.create({
       name: name || file.originalname,
@@ -173,58 +153,28 @@ class FileService {
       $push: { children: newFile._id }
     })
 
-    // reference unused params to silence linter (processing may be handled async by RabbitMQ)
-    void generateQuiz
-    void quizQuestions
-    void quizDifficulty
-
     // Decide processing: if createSummary requested, push job to RabbitMQ and return queued status.
-    if (createSummary) {
-      await RabbitClient.getInstance()
-      const envelope = {
-        type: 'file-process',
-        payload: {
-          fileId: (newFile._id as Types.ObjectId).toString(),
-          cloudinaryUrl: newFile.cloudinaryUrl,
-          userId,
-          mimeType: newFile.mimeType || file.mimetype
-        }
-      }
-      await RabbitClient.publish(QueueNameEnum.FILE_PROCESS, envelope)
+    // if (createSummary) {
+    //   await RabbitClient.getInstance()
+    //   const envelope = {
+    //     type: 'file-process',
+    //     payload: {
+    //       fileId: (newFile._id as Types.ObjectId).toString(),
+    //       cloudinaryUrl: newFile.cloudinaryUrl,
+    //       userId,
+    //       mimeType: newFile.mimeType || file.mimetype
+    //     }
+    //   }
+    //   await RabbitClient.publish(QueueNameEnum.FILE_PROCESS, envelope)
 
-      return {
-        file: this.formatFileResponse(newFile, subject.name, 0),
-        processing: { queued: true }
-      }
-    }
+    //   return {
+    //     file: this.formatFileResponse(newFile, subject.name, 0),
+    //     processing: { queued: true }
+    //   }
+    // }
 
-    // If no queue requested, do synchronous summarization (keep previous behavior)
-    // If caller provided a filePath use it, otherwise write buffer to a temp file
-    let extractedPath: string | undefined = filePath
-    let createdTmp = false
-    if (!extractedPath) {
-      const tmpName = `${Date.now()}-${Math.random().toString(36).slice(2)}${fileExtension}`
-      extractedPath = path.join(os.tmpdir(), tmpName)
-      await fs.promises.writeFile(extractedPath, file.buffer)
-      createdTmp = true
-    }
-
-    try {
-      const text = await extractTextFromFile(extractedPath as string, file.mimetype)
-      const { summary, aiMatchScore } = await summarizeText(text, GEMINI_API_KEY)
-
-      if (createdTmp && extractedPath) fs.unlink(extractedPath, () => {})
-
-      return {
-        file: this.formatFileResponse(newFile, subject.name, 0),
-        summary: {
-          summary,
-          aiMatchScore
-        }
-      }
-    } catch (err) {
-      if (createdTmp && extractedPath) fs.unlink(extractedPath, () => {})
-      throw err
+    return {
+      file: this.formatFileResponse(newFile, subject.name, 0)
     }
   }
 
@@ -460,13 +410,13 @@ class FileService {
       sizeBytes: file.size,
       mimeType: file.mimeType || 'application/octet-stream',
       summaryCount: file.summaryCount || 0,
-      quizCount: quizCount,
+      quizCount: quizCount || 0,
       url: file.cloudinaryUrl || '',
       metadata: {
         // TODO: Có thể thêm metadata khác nếu cần
         language: 'en'
-      },
-      summaryContent: file.summaryContent
+      }
+      // summaryContent: file.summaryContent
     }
   }
 }

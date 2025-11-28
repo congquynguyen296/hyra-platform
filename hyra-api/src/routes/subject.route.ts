@@ -5,14 +5,16 @@ import authenticate from '~/middleware/authen.middleware'
 
 const subjectRoute = Router()
 
-subjectRoute.get('/all', subjectController.getAllSubject)
+subjectRoute.get('/all', authenticate, subjectController.getAllSubject)
 
-subjectRoute.post('/new', subjectController.createSubject)
+subjectRoute.post('/new', authenticate, subjectController.createSubject)
 
-subjectRoute.put('/:subjectId', subjectController.updateSubject)
+subjectRoute.put('/:subjectId', authenticate, subjectController.updateSubject)
 
-subjectRoute.get('/:subjectId', subjectController.getSubjectById)
+subjectRoute.get('/:subjectId', authenticate, subjectController.getSubjectById)
 
 subjectRoute.get('/:subjectId/files', authenticate, fileController.getFilesBySubjectId)
+
+subjectRoute.delete('/:subjectId', authenticate, subjectController.deleteSubject)
 
 export default subjectRoute

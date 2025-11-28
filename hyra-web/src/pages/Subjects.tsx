@@ -1,4 +1,3 @@
-import { useAppStore } from "@/store/useAppStore";
 import { toast } from "sonner";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { CreateSubjectDialog } from "@/components/subjects/CreateSubjectDialog";
@@ -8,7 +7,6 @@ import { SubjectStatsDTO } from "@/types/Subject";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export default function Subjects() {
-  const { files, addSubject } = useAppStore();
   const [subjects, setSubjects] = useState<SubjectStatsDTO[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +15,6 @@ export default function Subjects() {
       setLoading(true);
       const data = await subjectService.getAllSubjectByUser();
       if (data && data.code && data.code === 200) {
-        console.log(data);
         setSubjects(data.result);
       }
     } catch (error) {
@@ -45,13 +42,12 @@ export default function Subjects() {
     }
   };
 
-  const handleEdit = (id: string) => {
-    // toast.info('Edit functionality coming soon');
+  // Hàm này chỉ đơn thuần update UI, không gọi API nữa
+  const handleRemoveFromList = (id: string) => {
+    setSubjects((prev) => prev.filter((subject) => subject.id !== id));
   };
 
-  const handleDelete = (id: string) => {
-    toast.info("Delete functionality coming soon");
-  };
+  // Hàm Edit đã bị xóa vì SubjectCard tự quản lý
 
   if (loading) {
     return (
@@ -87,9 +83,9 @@ export default function Subjects() {
                 name: subject.name,
                 color: subject.color,
               }}
-              onEdit={handleEdit}
               stats={subject?.stats}
-              onDelete={handleDelete}
+              // Truyền callback để xóa item khỏi list khi Card xóa thành công
+              onDeleteSuccess={handleRemoveFromList}
             />
           );
         })}

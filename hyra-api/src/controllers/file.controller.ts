@@ -12,14 +12,10 @@ import ApiError from '~/middleware/ApiError'
  * Controller xử lý các HTTP requests liên quan đến File
  */
 class FileController {
-  /**
-   * POST /files
-   * Upload file mới
-   */
   async uploadFile(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.user?.userId
-      const file = req.file // File từ multer
+      const file = req.file
 
       if (!userId) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, 'Bạn cần đăng nhập để upload file')
@@ -30,42 +26,19 @@ class FileController {
       }
 
       // Lấy thông tin từ request body
-      const {
-        subject: subjectId,
-        createSummary = false,
-        generateQuiz = false,
-        quizQuestions = 10,
-        quizDifficulty = 'Medium',
-        upload_preset,
-        name
-      } = req.body
+      const { subjectId } = req.body
 
       if (!subjectId) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Subject ID là bắt buộc')
       }
 
-      // Parse boolean values (vì form-data gửi lên dạng string)
-      const shouldCreateSummary = createSummary === 'true' || createSummary === true
-      const shouldGenerateQuiz = generateQuiz === 'true' || generateQuiz === true
-
-      const result = await fileService.uploadFile(
-        userId,
-        file,
-        subjectId,
-        shouldCreateSummary,
-        shouldGenerateQuiz,
-        parseInt(quizQuestions),
-        quizDifficulty,
-        upload_preset,
-        name
-      )
+      const result = await fileService.uploadFile(userId, file, subjectId)
 
       sendResponse(res, {
         code: StatusCodes.CREATED,
         message: 'File uploaded successfully',
         result: {
-          file: result.file,
-          processing: result.processing
+          file: result.file
         }
       })
     } catch (error) {
